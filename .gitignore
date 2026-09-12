@@ -1,0 +1,12 @@
+# Blender backup/temp files
+*.blend1
+*.blend2
+*.blend@
+*.tmp
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Godot generated/imported files
+.godot/
