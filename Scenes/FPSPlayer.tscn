@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://Scripts/fps_player.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://Characters/Player_01/Player_01.tscn" id="2_model"]
+
+[ext_resource type="PackedScene" path="res://Weapons/Assault_Rifle_01/AssaultRifle.tscn" id="3_weapon"]
+
+[sub_resource type="CapsuleShape3D" id="Capsule"]
+radius = 0.28
+height = 1.8
+
+[node name="Player" type="CharacterBody3D"]
+floor_snap_length = 0.25
+script = ExtResource("1_script")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.9, 0)
+shape = SubResource("Capsule")
+
+[node name="Visual" parent="." instance=ExtResource("2_model")]
+rotation = Vector3(0, 3.1415927, 0)
+
+[node name="Head" type="Node3D" parent="."]
+position = Vector3(0, 1.62, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+current = true
+fov = 80.0
+near = 0.05
+
+[node name="AssaultRifle" parent="Head/Camera3D" instance=ExtResource("3_weapon")]

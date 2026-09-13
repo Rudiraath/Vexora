@@ -1,0 +1,191 @@
+[gd_scene load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://Scripts/test_arena.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://Maps/Test_map_01/Test_map_01.glb" id="2_map"]
+[ext_resource type="PackedScene" path="res://Scenes/FPSPlayer.tscn" id="3_player"]
+
+[ext_resource type="PackedScene" path="res://Scenes/PracticeTarget.tscn" id="4_target"]
+
+[ext_resource type="Script" path="res://Scripts/arena_materials.gd" id="5_materials"]
+
+[ext_resource type="Script" path="res://Scripts/pause_settings.gd" id="6_settings"]
+
+[ext_resource type="PackedScene" path="res://Scenes/DamageZone.tscn" id="7_zone"]
+[ext_resource type="Script" path="res://Scripts/health_hud.gd" id="8_health"]
+
+[ext_resource type="Script" path="res://Scripts/bot_manager.gd" id="9_bots"]
+
+[sub_resource type="ProceduralSkyMaterial" id="SkyMaterial"]
+sky_top_color = Color(0.20, 0.34, 0.49, 1)
+sky_horizon_color = Color(0.72, 0.79, 0.82, 1)
+ground_bottom_color = Color(0.13, 0.17, 0.20, 1)
+ground_horizon_color = Color(0.60, 0.67, 0.71, 1)
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMaterial")
+
+[sub_resource type="Environment" id="Environment"]
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 3
+ambient_light_color = Color(0.70, 0.81, 0.94, 1)
+ambient_light_energy = 0.65
+tonemap_mode = 2
+
+[node name="TestArena" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="Map" parent="." instance=ExtResource("2_map")]
+script = ExtResource("5_materials")
+
+[node name="Player" parent="." instance=ExtResource("3_player")]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-52, -28, 0)
+light_color = Color(1, 0.91, 0.78, 1)
+light_energy = 1.4
+shadow_enabled = true
+directional_shadow_max_distance = 80.0
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Title" type="Label" parent="HUD"]
+offset_left = 30.0
+offset_top = 24.0
+offset_right = 420.0
+offset_bottom = 57.0
+theme_override_colors/font_color = Color(0.42, 0.94, 0.84, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.6)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 25
+text = "VEXORA / TEST ARENA"
+
+[node name="Subtitle" type="Label" parent="HUD"]
+offset_left = 31.0
+offset_top = 60.0
+offset_right = 480.0
+offset_bottom = 87.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 15
+text = "TEST MAP 01     /     RIFLE / TARGET PRACTICE"
+
+[node name="Status" type="Label" parent="HUD"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -220.0
+offset_top = 32.0
+offset_right = -30.0
+offset_bottom = 58.0
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0.42, 0.94, 0.84, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 16
+text = "FREE ROAM"
+horizontal_alignment = 2
+
+[node name="Crosshair" type="Label" parent="HUD"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -12.0
+offset_top = -18.0
+offset_right = 12.0
+offset_bottom = 18.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.75)
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 24
+text = "+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Controls" type="Label" parent="HUD"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = -53.0
+offset_right = -30.0
+offset_bottom = -23.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 14
+text = "WASD  Move     MOUSE  Look     SHIFT  Slide     SPACE  Jump     LMB  Fire   RMB  Aim   R  Reload   F6  Respawn     ESC  Pause"
+
+[node name="PausePanel" type="ColorRect" parent="HUD"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+color = Color(0.025, 0.05, 0.07, 0.90)
+script = ExtResource("6_settings")
+
+[node name="Targets" type="Node3D" parent="."]
+[node name="NearTarget" parent="Targets" instance=ExtResource("4_target")]
+position = Vector3(-12, 1.6, 12)
+rotation_degrees = Vector3(0, -45, 0)
+[node name="WestTarget" parent="Targets" instance=ExtResource("4_target")]
+position = Vector3(-17, 1.6, 3)
+[node name="CenterTarget" parent="Targets" instance=ExtResource("4_target")]
+position = Vector3(0, 2.6, -1.8)
+[node name="EastTarget" parent="Targets" instance=ExtResource("4_target")]
+position = Vector3(15, 1.6, -2)
+[node name="Ammo" type="Label" parent="HUD"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -260.0
+offset_top = -145.0
+offset_right = -30.0
+offset_bottom = -100.0
+horizontal_alignment = 2
+theme_override_font_sizes/font_size = 36
+[node name="Reload" type="Label" parent="HUD"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -350.0
+offset_top = -98.0
+offset_right = -30.0
+offset_bottom = -68.0
+horizontal_alignment = 2
+[node name="HitMarker" type="Label" parent="HUD"]
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -18.0
+offset_top = -23.0
+offset_right = 18.0
+offset_bottom = 23.0
+text = "×"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 36
+theme_override_colors/font_color = Color(1, 0.3, 0.15, 1)
+
+[node name="DamageZone" parent="." instance=ExtResource("7_zone")]
+position = Vector3(-12, 0, 17)
+[node name="HealthHUD" type="CanvasLayer" parent="."]
+script = ExtResource("8_health")
+
+[node name="Bots" type="Node3D" parent="."]
+script = ExtResource("9_bots")
